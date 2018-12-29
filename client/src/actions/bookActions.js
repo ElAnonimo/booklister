@@ -49,6 +49,7 @@ export const addBook = (bookData, history) => (dispatch) => {
 		data: formData
 	})
 		.then(res => {
+			delete bookData.cover;
 			bookData.cloudinarySecureUrl = res.data.secure_url;
 
 			axios.post('/api/books', bookData)
