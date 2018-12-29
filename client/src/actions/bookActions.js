@@ -35,8 +35,6 @@ export const getBook = (book_id) => (dispatch) => {
 
 // add book
 export const addBook = (bookData, history) => (dispatch) => {
-	console.log('bookData from bookActions.js:', bookData);
-
 	const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dlzbcvsbf/upload';
 	const cloudinaryUploadPreset = 'hvqidzpj';
 
@@ -51,9 +49,6 @@ export const addBook = (bookData, history) => (dispatch) => {
 		data: formData
 	})
 		.then(res => {
-			console.log('cloudinary res from bookActions.js:', res);
-			console.log('res.data.secure_url from bookActions.js:', res.data.secure_url);
-
 			bookData.cloudinarySecureUrl = res.data.secure_url;
 
 			axios.post('/api/books', bookData)

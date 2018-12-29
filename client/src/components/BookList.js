@@ -43,7 +43,7 @@ class BookList extends Component {
 					<div className='col-md-12'>
 						<div className='d-flex justify-content-between align-items-center'>
 							<SortSelect />
-							<Link to='/addbook' className='btn btn-success'>Add Book</Link>
+							<Link to='/addbook' className='btn btn-primary'>Add Book</Link>
 						</div>
 						{booksContent}
 					</div>

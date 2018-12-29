@@ -104,7 +104,7 @@ class AddBookForm extends Component {
       'publishedAt': this.props.book && moment(this.props.book.publishedAt).format('MM.DD.YYYY') || '',
       'releasedAt': this.props.book && moment(this.props.book.releasedAt).format('MM.DD.YYYY') || '',
       'isbn13': this.props.book && this.props.book.isbn13 || '',
-      'cover': this.props.book && this.props.book.cover || '',
+      'cover': this.props.book && this.props.book.cover || [],
       'authors': names,
       book_id: this.props.book && this.props.book._id,
 			cloudinarySecureUrl: this.props.book && this.props.book.cloudinarySecureUrl
