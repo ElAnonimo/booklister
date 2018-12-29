@@ -1,0 +1,20 @@
+{
+  "name": "booklist",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "server": "nodemon server.js",
+    "dev": "concurrently \"yarn run server\" \"yarn --cwd client run dev\""
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "concurrently": "^3.5.1",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.15",
+    "react-moment": "^0.8.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.17.3"
+  }
+}
