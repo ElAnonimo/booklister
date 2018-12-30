@@ -49,6 +49,7 @@ export const addBook = (bookData, history) => (dispatch) => {
 		data: formData
 	})
 		.then(res => {
+			console.log(res);
 			delete bookData.cover;
 			bookData.cloudinarySecureUrl = res.data.secure_url;
 

@@ -27,12 +27,13 @@ const renderField = ({
   </div>
 );
 
-const fileField = ({ input, type, label, disabled, comment, meta: { touched, error, warning } }) => {
+const fileField = ({ input, type, label, disabled, comment, cover, meta: { touched, error, warning } }) => {
 	delete input.value;
 
 	return (
 		<div>
 			<div><label>{label}</label></div>
+			<div>{cover}</div>
 			<label className='btn btn-secondary select-cover'>
 				Select Cover
 				<input {...input} hidden type={type} disabled={disabled} />
@@ -178,6 +179,7 @@ class AddBookForm extends Component {
           component={fileField}
           label='Cover'
           comment='Please provide a cover. Optional'
+					cover={this.props.book.cloudinarySecureUrl ? <img src={this.props.book.cloudinarySecureUrl} className='book-item-cover' /> : <span>No Image</span>}
         />
         <Field
           name='authors'
