@@ -35,6 +35,7 @@ export const getBook = (book_id) => (dispatch) => {
 
 // add book
 export const addBook = (bookData, history) => (dispatch) => {
+	console.log(bookData);
 	const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dlzbcvsbf/upload';
 	const cloudinaryUploadPreset = 'hvqidzpj';
 
@@ -49,7 +50,7 @@ export const addBook = (bookData, history) => (dispatch) => {
 		data: formData
 	})
 		.then(res => {
-			console.log(res);
+			console.log('Cloudinary image upload res from bookActions.js:', res);
 			delete bookData.cover;
 			bookData.cloudinarySecureUrl = res.data.secure_url;
 

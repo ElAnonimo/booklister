@@ -179,7 +179,7 @@ class AddBookForm extends Component {
           component={fileField}
           label='Cover'
           comment='Please provide a cover. Optional'
-					cover={this.props.book.cloudinarySecureUrl ? <img src={this.props.book.cloudinarySecureUrl} className='book-item-cover' /> : <span>No Image</span>}
+					cover={this.props.book && this.props.book.cloudinarySecureUrl ? <img src={this.props.book.cloudinarySecureUrl} className='book-item-cover' /> : <span>No Image</span>}
         />
         <Field
           name='authors'
