@@ -35,12 +35,39 @@ export const getBook = (book_id) => (dispatch) => {
 
 // add book
 export const addBook = (bookData, history) => (dispatch) => {
-	console.log(bookData);
+	console.log('bookData from bookActions:', bookData);
+
 	const cloudinaryUrl = 'https://api.cloudinary.com/v1_1/dlzbcvsbf/upload';
 	const cloudinaryUploadPreset = 'hvqidzpj';
 
 	const formData = new FormData();
-	formData.append('file', bookData.cover[0]);
+
+	bookData.cover[0] && formData.append('file', bookData.cover[0]);
+	console.log('bookData.cover:', bookData.cover);
+
+	if (!bookData.cover[0]) {
+		let blob = new Blob([''], { type: 'image/png' });
+		blob['lastModifiedDate'] = '';
+		blob['name'] = 'mockImageFile';
+		blob['webkitRelativePath'] = '';
+		// blob['size'] = 7654;
+		console.log('blob', blob);
+
+		const reader = new FileReader();
+
+		let blob_base64data;
+		reader.readAsDataURL(blob);
+		reader.onloadend = function() {
+			blob_base64data = reader.result;
+			console.log('blob_base64data:', blob_base64data);
+			formData.append('file', blob_base64data);
+		};
+
+		// formData.append('file', blob_base64data);
+
+		// formData.append('file', blob);
+	}
+
 	formData.append('upload_preset', cloudinaryUploadPreset);
 
 	axios({
@@ -65,6 +92,19 @@ export const addBook = (bookData, history) => (dispatch) => {
 		})
 		.catch(error => {
 			console.log('Cloudinary image upload error:', error.message);
+
+			/* delete bookData.cover;
+			bookData.cloudinarySecureUrl = '';
+
+			axios.post('/api/books', bookData)
+				.then(res => {
+					history.push('/')
+				})
+				.catch(err => dispatch({
+					type: GET_ERRORS,
+					payload: err.response.data
+				})); */
+
 			history.push('/');
 		});
 };

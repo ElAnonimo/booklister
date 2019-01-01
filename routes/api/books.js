@@ -56,7 +56,10 @@ router.post('/', (req, res) => {
 			if (book) {
         // book exists, update it
         Book.findOneAndUpdate({ _id: req.body.book_id }, { $set: bookFields }, { new: true })
-          .then(book => res.json(book));
+          .then(book => {
+          	console.log('book from books.js route:', book);
+          	res.json(book);
+          });
 			} else {
         // create book
         new Book(bookFields).save()

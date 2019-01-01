@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "inst": "yarn install && yarn --cwd client install",
     "server": "nodemon server.js",
     "dev": "concurrently \"yarn run server\" \"yarn --cwd client run dev\""
   },
