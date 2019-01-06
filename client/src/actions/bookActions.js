@@ -47,20 +47,10 @@ export const addBook = (bookData, history) => (dispatch) => {
 
 	formData.append('upload_preset', cloudinaryUploadPreset);
 
-	if (!bookData.cover[0] || !bookData.cloudinarySecureUrl) {
+	if (!bookData.cover[0]) {
 		axios.post('/api/books', bookData)
 			.then(res => {
 				console.log('bookActions addBook res when saving book w/o cover:', res.data);
-				history.push('/')
-			})
-			.catch(err => dispatch({
-				type: GET_ERRORS,
-				payload: err.response.data
-			}));
-	} else if (bookData.cloudinarySecureUrl) {
-		axios.post('/api/books', bookData)
-			.then(res => {
-				console.log('bookActions addBook res when saving book with cover url:', res.data);
 				history.push('/')
 			})
 			.catch(err => dispatch({

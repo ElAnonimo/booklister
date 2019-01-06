@@ -19,6 +19,10 @@ class BookList extends Component {
   		return books;
 		}
 
+		if (sortBy === 'title') {
+  		return books.sort((a, b) => a[sortBy].toLowerCase() < b[sortBy].toLowerCase() ? -1 : 1);
+		}
+
 		return books.sort((a, b) => a[sortBy] < b[sortBy] ? -1 : 1);
 	}
 
