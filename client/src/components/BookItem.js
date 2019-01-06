@@ -40,10 +40,6 @@ class BookItem extends Component {
 									{book.pages ? <td>{book.pages}</td> : <td>n/a</td>}
 								</tr>
 								<tr>
-									<th>Cover</th>
-									{book.cloudinarySecureUrl ? <td><img src={book.cloudinarySecureUrl} className='book-item-cover' /></td> : <td>No Image</td>}
-								</tr>
-								<tr>
 									<th>Publisher</th>
 									{book.publisher ? <td>{book.publisher}</td> : <td>n/a</td>}
 								</tr>
@@ -62,14 +58,30 @@ class BookItem extends Component {
 								</tbody>
 							</table>
             </div>
+						<div className='col-lg-6 col-md-4 col-8 d-flex flex-column align-content-between'>
+							<h3>&nbsp;</h3>
+							<table className='table'>
+								<tbody>
+									<tr>
+										<th className='text-center'>Cover</th>
+									</tr>
+									<tr>
+										<td className='d-flex justify-content-center align-items-center'>
+											{book.cloudinarySecureUrl
+												? <img src={book.cloudinarySecureUrl} className='book-item-cover' />
+												: <h1 className='book-item-cover d-flex align-items-center mb-0'>No Image</h1>
+											}
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
           </div>
         </div>
       );
     }
     
-    return (
-			bookContent
-    );
+    return bookContent;
   }
 }
 
