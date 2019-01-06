@@ -42,71 +42,58 @@ export const addBook = (bookData, history) => (dispatch) => {
 
 	const formData = new FormData();
 
-	bookData.cover[0] && formData.append('file', bookData.cover[0]);
+	bookData.cover && bookData.cover[0] && formData.append('file', bookData.cover[0]);
 	console.log('bookData.cover:', bookData.cover);
-
-	if (!bookData.cover[0]) {
-		let blob = new Blob([''], { type: 'image/png' });
-		blob['lastModifiedDate'] = '';
-		blob['name'] = 'mockImageFile';
-		blob['webkitRelativePath'] = '';
-		// blob['size'] = 7654;
-		console.log('blob', blob);
-
-		const reader = new FileReader();
-
-		let blob_base64data;
-		reader.readAsDataURL(blob);
-		reader.onloadend = function() {
-			blob_base64data = reader.result;
-			console.log('blob_base64data:', blob_base64data);
-			formData.append('file', blob_base64data);
-		};
-
-		// formData.append('file', blob_base64data);
-
-		// formData.append('file', blob);
-	}
 
 	formData.append('upload_preset', cloudinaryUploadPreset);
 
-	axios({
-		url: cloudinaryUrl,
-		method: 'POST',
-		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-		data: formData
-	})
-		.then(res => {
-			console.log('Cloudinary image upload res from bookActions.js:', res);
-			delete bookData.cover;
-			bookData.cloudinarySecureUrl = res.data.secure_url;
-
-			axios.post('/api/books', bookData)
-				.then(res => {
-					history.push('/')
-				})
-				.catch(err => dispatch({
-					type: GET_ERRORS,
-					payload: err.response.data
-				}));
+	if (!bookData.cover[0] || !bookData.cloudinarySecureUrl) {
+		axios.post('/api/books', bookData)
+			.then(res => {
+				console.log('bookActions addBook res when saving book w/o cover:', res.data);
+				history.push('/')
+			})
+			.catch(err => dispatch({
+				type: GET_ERRORS,
+				payload: err.response.data
+			}));
+	} else if (bookData.cloudinarySecureUrl) {
+		axios.post('/api/books', bookData)
+			.then(res => {
+				console.log('bookActions addBook res when saving book with cover url:', res.data);
+				history.push('/')
+			})
+			.catch(err => dispatch({
+				type: GET_ERRORS,
+				payload: err.response.data
+			}));
+	} else {
+		axios({
+			url: cloudinaryUrl,
+			method: 'POST',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+			data: formData
 		})
-		.catch(error => {
-			console.log('Cloudinary image upload error:', error.message);
+			.then(res => {
+				console.log('Cloudinary image upload res from bookActions.js:', res);
+				delete bookData.cover;
+				bookData.cloudinarySecureUrl = res.data.secure_url;
 
-			/* delete bookData.cover;
-			bookData.cloudinarySecureUrl = '';
-
-			axios.post('/api/books', bookData)
-				.then(res => {
-					history.push('/')
-				})
-				.catch(err => dispatch({
-					type: GET_ERRORS,
-					payload: err.response.data
-				})); */
-
-			history.push('/');
-		});
+				axios.post('/api/books', bookData)
+					.then(res => {
+						console.log('bookActions addBook res when saving book with cover:', res.data);
+						history.push('/')
+					})
+					.catch(err => dispatch({
+						type: GET_ERRORS,
+						payload: err.response.data
+					}));
+			})
+			.catch(error => {
+				console.log('Cloudinary image upload error:', error.message);
+				history.push('/');
+			});
+	}
 };
 
 // delete book

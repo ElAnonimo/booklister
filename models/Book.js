@@ -38,9 +38,6 @@ const BookSchema = new Schema({
   isbn13: {
     type: String
   },
-	cover: {
-		type: Object
-	},
 	cloudinarySecureUrl: {
 		type: String
 	}

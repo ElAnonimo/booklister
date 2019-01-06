@@ -108,7 +108,8 @@ class AddBookForm extends Component {
       'cover': this.props.book && this.props.book.cover || [],
       'authors': names,
       book_id: this.props.book && this.props.book._id,
-			cloudinarySecureUrl: this.props.book && this.props.book.cloudinarySecureUrl
+			cloudinarySecureUrl: this.props.book && this.props.book.cloudinarySecureUrl,
+			public_id: this.props.book && this.props.book.public_id
     };
 
     this.props.initialize(initData);
@@ -194,7 +195,7 @@ class AddBookForm extends Component {
           disabled={submitting}
           className='btn btn-primary mr-3'
         >
-          Add Book
+					{this.props.book ? 'Save Edits' : 'Add Book'}
         </button>
         <button type='button' disabled={pristine || submitting} onClick={reset} className='btn btn-secondary'>
           Clear Values
