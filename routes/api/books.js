@@ -50,6 +50,10 @@ router.post('/', (req, res) => {
   if (typeof req.body.authors !== 'undefined') {
     bookFields.authors = req.body.authors;
   }
+
+  if (!bookFields.cloudinarySecureUrl) {
+		bookFields.cloudinarySecureUrl = '';
+	}
   
 	Book.findOne({ _id: req.body.book_id })
 		.then(book => {

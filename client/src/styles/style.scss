@@ -12,3 +12,10 @@
 .book-item-cover {
 	height: 17rem;
 }
+
+.remove-cover {
+	margin-top: 0.25rem;
+	&-controls:hover {
+		cursor: pointer;
+	}
+}

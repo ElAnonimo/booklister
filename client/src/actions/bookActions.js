@@ -48,8 +48,13 @@ export const addBook = (bookData, history) => (dispatch) => {
 	formData.append('upload_preset', cloudinaryUploadPreset);
 
 	if (!bookData.cover[0]) {
+		if (bookData.removeCover) {
+			bookData.cloudinarySecureUrl = '';
+		}
+
 		axios.post('/api/books', bookData)
 			.then(res => {
+				console.log('bookActions bookData when saving book w/o cover:', bookData);
 				console.log('bookActions addBook res when saving book w/o cover:', res.data);
 				history.push('/')
 			})
@@ -66,6 +71,7 @@ export const addBook = (bookData, history) => (dispatch) => {
 		})
 			.then(res => {
 				console.log('Cloudinary image upload res from bookActions.js:', res);
+				// cover image isn't stored to DB no need to send it to server
 				delete bookData.cover;
 				bookData.cloudinarySecureUrl = res.data.secure_url;
 

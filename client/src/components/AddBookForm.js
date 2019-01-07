@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {Field, reduxForm} from 'redux-form';
+import { connect } from 'react-redux';
+import {Field, reduxForm, formValueSelector} from 'redux-form';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -41,8 +42,8 @@ const fileField = ({ input, type, label, disabled, comment, cover, meta: { touch
 			<p>
 				<small className='form-text'>{comment}</small>
 				{touched &&
-				((error && <small className='text-danger'>{error}</small>) ||
-					(warning && <small className='text-info'>{warning}</small>))
+					((error && <small className='text-danger'>{error}</small>) ||
+						(warning && <small className='text-info'>{warning}</small>))
 				}
 				</p>
 		</div>
@@ -107,9 +108,7 @@ class AddBookForm extends Component {
       'isbn13': this.props.book && this.props.book.isbn13 || '',
       'cover': this.props.book && this.props.book.cover || [],
       'authors': names,
-      book_id: this.props.book && this.props.book._id,
-			cloudinarySecureUrl: this.props.book && this.props.book.cloudinarySecureUrl,
-			public_id: this.props.book && this.props.book.public_id
+      book_id: this.props.book && this.props.book._id
     };
 
     this.props.initialize(initData);
@@ -182,6 +181,12 @@ class AddBookForm extends Component {
           comment='Please provide a cover. Optional'
 					cover={this.props.book && this.props.book.cloudinarySecureUrl ? <img src={this.props.book.cloudinarySecureUrl} className='book-item-cover' /> : <span>No Image</span>}
         />
+				<Field
+					name='removeCover'
+					type='checkbox'
+					label='Remove Cover'
+					component={renderField}
+				/>
         <Field
           name='authors'
 					sup='*'
@@ -205,6 +210,8 @@ class AddBookForm extends Component {
   }
 }
 
+const selector = formValueSelector('AddBookForm');
+
 AddBookForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
@@ -213,6 +220,12 @@ AddBookForm.propTypes = {
   submitting: PropTypes.bool.isRequired
 };
 
-export default AddBookForm = reduxForm({
+const mapStateToProps = state => {
+	const removeCover = selector(state, 'removeCover');
+
+	return removeCover;
+};
+
+export default AddBookForm = connect(null)(reduxForm({
   form: 'AddBookForm'
-})(AddBookForm);
+})(AddBookForm));

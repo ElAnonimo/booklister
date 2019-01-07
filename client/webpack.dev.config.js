@@ -14,7 +14,10 @@ module.exports = {
   mode: 'development',
   devServer: {
     contentBase: path.join(__dirname, '/dist'),
-    hot: true,
+		// had to swap hot option for inline one to reload on style changes too,
+		// HMR only reload the changed component, @see https://stackoverflow.com/a/43965729/5524590
+    // hot: true,
+		inline: true,
     open: true,
     proxy: {
       '/api/**': {
@@ -49,7 +52,8 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+  	// HMR is disabled see devServer section comment
+    // new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({ template: './src/index.html' }),
 		new MiniCssExtractPlugin({ filename: 'style.css' })
   ]
