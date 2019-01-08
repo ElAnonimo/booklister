@@ -3,7 +3,7 @@ import {Field, reduxForm} from 'redux-form';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
-const renderField = ({
+/*const renderField = ({
   input,
   label,
   type,
@@ -25,9 +25,10 @@ const renderField = ({
 			</p>
     </div>
   </div>
-);
+);*/
 
-const fileField = ({ input, type, label, disabled, comment, cover, meta: { touched, error, warning } }) => {
+/*const fileField = ({ input, type, label, disabled, comment, cover, meta: { touched, error, warning } }) => {
+	console.log('AddBookForm fileField value:', input.value);
 	delete input.value;
 
 	return (
@@ -36,10 +37,10 @@ const fileField = ({ input, type, label, disabled, comment, cover, meta: { touch
 			<div>{cover}</div>
 			<label className='btn btn-secondary select-cover'>
 				Select Cover
-				<input {...input} hidden type={type} disabled={disabled} />
+				<input {...input} hidden type={type} disabled={disabled} onChange={this.handleCoverPreview} />
 			</label>
 			<p>
-				<small className='form-text'>{comment}</small>
+				{comment && <small className='form-text'>{comment}</small>}
 				{touched &&
 					((error && <small className='text-danger'>{error}</small>) ||
 						(warning && <small className='text-info'>{warning}</small>))
@@ -47,7 +48,7 @@ const fileField = ({ input, type, label, disabled, comment, cover, meta: { touch
 				</p>
 		</div>
 	);
-};
+};*/
 
 const required = value => value || typeof value === 'number' ? undefined : 'Required';
 const maxLength = max => value => value && value.length > max ? `Must be ${max} characters or less` : undefined;
@@ -83,9 +84,84 @@ const authorMaxLength20 = (value = '') => {
 };
 
 class AddBookForm extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			showCover: true,
+			coverPreview: null
+		};
+
+		this.handleShowCoverChange = this.handleShowCoverChange.bind(this);
+		this.handleCoverPreview = this.handleCoverPreview.bind(this);
+		this.renderField = this.renderField.bind(this);
+		this.fileField = this.fileField.bind(this);
+	}
+
   componentDidMount() {
   	this.handleInitialize();
   }
+
+  componentWillUnmount() {
+		URL.revokeObjectURL(this.state.coverPreview);
+	}
+
+	handleShowCoverChange() {
+		this.setState({ showCover: !this.state.showCover });
+	}
+
+	handleCoverPreview(evt) {
+		URL.revokeObjectURL(this.state.coverPreview);
+		this.setState({ coverPreview: URL.createObjectURL(evt.target.files[0]) });
+	}
+
+	renderField({
+		input,
+		label,
+		type,
+		comment,
+		sup,
+		meta: { touched, error, warning }
+	}) {
+		return (
+		<div>
+			<label>{label}</label>
+			{sup && <span className='text-danger h6'>{sup}</span>}
+			<div>
+				<input {...input} placeholder={label} type={type} className='form-control' />
+				<p>
+					{comment && <small className='form-text'>{comment}</small>}
+					{touched &&
+					((error && <small className='text-danger'>{error}</small>) ||
+						(warning && <small className='text-info'>{warning}</small>))
+					}
+				</p>
+			</div>
+		</div>
+	)};
+
+	fileField({ input, type, label, disabled, comment, cover, meta: { touched, error, warning } }) {
+		console.log('AddBookForm fileField value:', input.value);
+		delete input.value;
+
+		return (
+			<div>
+				<div><label>{label}</label></div>
+				<div>{cover}</div>
+				<label className='btn btn-secondary select-cover'>
+					Select Cover
+					<input {...input} hidden type={type} disabled={disabled} />
+				</label>
+				<p>
+					{comment && <small className='form-text'>{comment}</small>}
+					{touched &&
+					((error && <small className='text-danger'>{error}</small>) ||
+						(warning && <small className='text-info'>{warning}</small>))
+					}
+				</p>
+			</div>
+		);
+	};
   
   handleInitialize() {
     let names = '';
@@ -123,7 +199,7 @@ class AddBookForm extends Component {
           name='title'
 					sup='*'
           type='text'
-          component={renderField}
+          component={this.renderField}
           label='Title'
           validate={[required, maxLength30]}
           warn={alphaNumeric}
@@ -133,7 +209,7 @@ class AddBookForm extends Component {
           name='pages'
 					sup='*'
           type='number'
-          component={renderField}
+          component={this.renderField}
           label='Total Pages'
           validate={[required, minPages0, maxPages10000]}
           warn={numeric}
@@ -142,7 +218,7 @@ class AddBookForm extends Component {
         <Field
           name='publisher'
           type='text'
-          component={renderField}
+          component={this.renderField}
           label='Publisher'
           validate={[maxLength30]}
           warn={alphaNumeric}
@@ -151,7 +227,7 @@ class AddBookForm extends Component {
         <Field
           name='publishedAt'
           type='text'
-          component={renderField}
+          component={this.renderField}
           label='Published At'
           warn={[notEarlier1800]}
           comment='Please provide a publication year as YYYY. Optional'
@@ -159,7 +235,7 @@ class AddBookForm extends Component {
         <Field
           name='releasedAt'
           type='text'
-          component={renderField}
+          component={this.renderField}
           label='Released At'
           warn={[notEarlier1800]}
           comment='Please provide a release date as YYYY-MM-DD. Optional'
@@ -167,7 +243,7 @@ class AddBookForm extends Component {
         <Field
           name='isbn13'
           type='text'
-          component={renderField}
+          component={this.renderField}
           label='ISBN-13'
           warn={[isbn13, alphaNumeric]}
           comment="Please provide an ISBN-13. E.g. '978-1-4028-9462-6' w/o quotes. Optional"
@@ -175,23 +251,42 @@ class AddBookForm extends Component {
         <Field
           name='cover'
           type='file'
-          component={fileField}
+          component={this.fileField}
           label='Cover'
-          comment='Please provide a cover. Optional'
-					cover={this.props.book && this.props.book.cloudinarySecureUrl ? <img src={this.props.book.cloudinarySecureUrl} className='book-item-cover' /> : <span>No Image</span>}
+          comment='Please select a cover. Optional'
+					onChange={this.handleCoverPreview}
+					cover={
+						this.state.showCover &&
+						this.props.book &&
+						this.props.book.cloudinarySecureUrl
+							? <div className='d-flex'>
+									<div className='mr-3'>
+										<p className='book-item-cover-status'>Current Cover</p>
+										<img src={this.props.book.cloudinarySecureUrl} className='book-item-cover' />
+									</div>
+									{this.state.coverPreview &&
+										<div>
+											<p className='book-item-cover-status'>New Cover Preview</p>
+											<img src={this.state.coverPreview} className='book-item-cover' />
+										</div>
+									}
+								</div>
+							: <span>No Image</span>
+					}
         />
 				<Field
 					name='removeCover'
 					type='checkbox'
 					label='Remove Cover'
-					comment='To remove cover check here and click Save Edits'
-					component={renderField}
+					comment='Check to remove cover. Please note cover is removed on Save Edits click'
+					component={this.renderField}
+					onChange={this.handleShowCoverChange}
 				/>
         <Field
           name='authors'
 					sup='*'
           type='text'
-          component={renderField}
+          component={this.renderField}
           label='Authors'
           validate={[authorMaxLength20, alphaNumeric]}
           comment='Please provide author name(s). Name(s) should be comma separated. E.g. Tom Hanks(, John Doe). Required'
@@ -218,6 +313,6 @@ AddBookForm.propTypes = {
   submitting: PropTypes.bool.isRequired
 };
 
-export default AddBookForm =reduxForm({
+export default AddBookForm = reduxForm({
   form: 'AddBookForm'
 })(AddBookForm);

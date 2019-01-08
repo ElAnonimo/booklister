@@ -11,6 +11,9 @@
 
 .book-item-cover {
 	height: 17rem;
+	&-status {
+		margin-bottom: 0;
+	}
 }
 
 .remove-cover {
