@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import {Field, reduxForm, formValueSelector} from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 
@@ -14,11 +13,11 @@ const renderField = ({
 }) => (
   <div>
     <label>{label}</label>
-		<span className='text-danger h6'>{sup}</span>
+		{sup && <span className='text-danger h6'>{sup}</span>}
     <div>
 			<input {...input} placeholder={label} type={type} className='form-control' />
-      <p>
-        <small className='form-text'>{comment}</small>
+			<p>
+				{comment && <small className='form-text'>{comment}</small>}
 				{touched &&
 					((error && <small className='text-danger'>{error}</small>) ||
 						(warning && <small className='text-info'>{warning}</small>))
@@ -185,6 +184,7 @@ class AddBookForm extends Component {
 					name='removeCover'
 					type='checkbox'
 					label='Remove Cover'
+					comment='To remove cover check here and click Save Edits'
 					component={renderField}
 				/>
         <Field
@@ -210,8 +210,6 @@ class AddBookForm extends Component {
   }
 }
 
-const selector = formValueSelector('AddBookForm');
-
 AddBookForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
@@ -220,12 +218,6 @@ AddBookForm.propTypes = {
   submitting: PropTypes.bool.isRequired
 };
 
-const mapStateToProps = state => {
-	const removeCover = selector(state, 'removeCover');
-
-	return removeCover;
-};
-
-export default AddBookForm = connect(null)(reduxForm({
+export default AddBookForm =reduxForm({
   form: 'AddBookForm'
-})(AddBookForm));
+})(AddBookForm);
